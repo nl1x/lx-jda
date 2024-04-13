@@ -1,0 +1,30 @@
+embeds:
+  default-color: <DEFAULT_COLOR>
+
+  footer:
+    icon: <FOOTER_ICON_LINK>
+    string: <FOOTER_STRING>
+
+  success:
+    title: Action réalisée avec succès !
+    color: <SUCCESS_COLOR>
+    icon: <SUCCESS_ICON_LINK>
+
+  error:
+    title: Une erreur s'est produite...
+    color: <ERROR_COLOR>
+    icon: <ERROR_ICON_LINK>
+
+
+token:
+  var: TOKEN
+
+
+channel:
+  log-report: <CHANNEL_ID>
+
+
+commands:
+  error:
+    not-found: Commande introuvable.
+    internal: Une erreur interne s'est produite.
