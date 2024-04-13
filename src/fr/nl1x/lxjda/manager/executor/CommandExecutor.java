@@ -15,17 +15,21 @@ public abstract class CommandExecutor
 
     private final String name;
     private final String description;
+    private final boolean adminOnly;
     private SlashCommandData data = null;
     private final List<OptionData> options;
 
     /**
      * @param name The name of the command.
      * @param description The description of the command.
+     * @param adminOnly {@code true} if only administrators can execute
+     *                   this command, {@code false} otherwise.
      */
-    public CommandExecutor(String name, String description)
+    public CommandExecutor(String name, String description, boolean adminOnly)
     {
         this.name = name;
         this.description = description;
+        this.adminOnly = adminOnly;
         this.options = new ArrayList<>();
     }
 
@@ -99,6 +103,15 @@ public abstract class CommandExecutor
     public SlashCommandData getSlashCommandData()
     {
         return this.data;
+    }
+
+    /**
+     * @return {@code true} if the command is only executable by an admin,
+     * {@code false} otherwise.
+     */
+    public boolean isAdminOnly()
+    {
+        return adminOnly;
     }
 
     /**

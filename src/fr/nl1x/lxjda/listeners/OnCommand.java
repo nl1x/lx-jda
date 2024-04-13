@@ -9,6 +9,7 @@ import fr.nl1x.lxjda.manager.EmbedManager;
 import fr.nl1x.lxjda.manager.config.BotConfig;
 import fr.nl1x.lxjda.manager.executor.CommandExecutor;
 import fr.nl1x.lxjda.logger.Logger;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -45,6 +46,7 @@ public class OnCommand extends ListenerAdapter implements Loggable
         HashMap<String, CommandExecutor> registeredCommands = CommandManager.getInstance().getRegisteredCommands();
         CommandExecutor executor = null;
         String commandName = event.getName();
+        Member member = event.getMember();
 
         if (!registeredCommands.containsKey(commandName)) {
             this.onError(event, botConfig.getCommandErrorNotFound());
@@ -53,6 +55,9 @@ public class OnCommand extends ListenerAdapter implements Loggable
 
         try {
             executor = registeredCommands.get(commandName);
+            if (executor.isAdminOnly()
+                    && member != null && !member.hasPermission(Permission.ADMINISTRATOR))
+                this.onError(event, botConfig.getCommandErrorAdminOnly());
             executor.execute(event);
         } catch (CommandExecutorError error) {
             this.onError(event, botConfig.getCommandErrorInternal());
@@ -85,7 +90,7 @@ public class OnCommand extends ListenerAdapter implements Loggable
         long logReportChannelId = botConfig.getChannelLogReport();
         TextChannel logReportChannel = null;
         CommandExecutor executor = this.bot.getCommandManager().getRegisteredCommand(event.getName());
-        String errorMessage = this.buildErrorMessage(executor.getName(), event.getOptions(), error, event.getMember());
+        String errorMessage = this.buildLogErrorMessage(executor.getName(), event.getOptions(), error, event.getMember());
         MessageEmbed embed = this.bot.getEmbedManager().getErrorBuilder("Command error", errorMessage).build();
 
         try {
@@ -99,13 +104,15 @@ public class OnCommand extends ListenerAdapter implements Loggable
     }
 
     /**
+     * Build the log error message.
+     *
      * @param command The command name that failed.
      * @param options The options sent by the user.
      * @param error The error message.
      * @param author The author of the event.
      * @return the error message.
      */
-    private String buildErrorMessage(String command, List<OptionMapping> options, String error, Member author)
+    private String buildLogErrorMessage(String command, List<OptionMapping> options, String error, Member author)
     {
         StringBuilder builder = new StringBuilder();
 
