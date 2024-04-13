@@ -46,9 +46,10 @@ public class CommandManager implements Loggable
     }
 
     /**
-     * Update the command on discord.
-     * If this function is never called, then no command will be available on discord.
-     * Call this function to update the registered commands on discord.
+     * Update the commands on discord.
+     * If this function is never called, then no registered command will be
+     * available on discord. Call this function to update the registered
+     * commands on discord.
      */
     public void updateCommands()
     {
