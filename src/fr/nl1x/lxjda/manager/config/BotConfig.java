@@ -20,6 +20,7 @@ public class BotConfig
     private int embedErrorColor;
     private String commandErrorNotFound;
     private String commandErrorInternal;
+    private String commandErrorAdminOnly;
     private long channelLogReport;
 
     public BotConfig(HashConfig botConfigFile)
@@ -94,6 +95,11 @@ public class BotConfig
         return commandErrorInternal;
     }
 
+    public String getCommandErrorAdminOnly()
+    {
+        return commandErrorAdminOnly;
+    }
+
     public long getChannelLogReport()
     {
         return channelLogReport;
@@ -119,6 +125,7 @@ public class BotConfig
 
         this.commandErrorNotFound = yaml.getString("command.error.not-found");
         this.commandErrorInternal = yaml.getString("command.error.internal");
+        this.commandErrorAdminOnly = yaml.getString("command.error.admin-only");
 
         this.commandErrorInternal = yaml.getString("channel.log-report");
     }
