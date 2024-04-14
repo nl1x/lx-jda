@@ -10,6 +10,10 @@ import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The {@code CommandExecutor} class allow you to create new commands.
+ * <strong>Don't forget to register your CommandExecutor ;)</strong>
+ */
 public abstract class CommandExecutor
 {
 
@@ -20,6 +24,8 @@ public abstract class CommandExecutor
     private final List<OptionData> options;
 
     /**
+     * Create a new {@code CommandExecutor}.
+     *
      * @param name The name of the command.
      * @param description The description of the command.
      * @param adminOnly {@code true} if only administrators can execute
@@ -34,6 +40,18 @@ public abstract class CommandExecutor
     }
 
     /**
+     * Add an argument to your command.
+     *
+     * @param optionData The {@code OptionData} to add.
+     */
+    public void addOptionData(OptionData optionData)
+    {
+        options.add(optionData);
+    }
+
+    /**
+     * Add an argument to your command.
+     *
      * @param type The type of the option.
      * @param name The name of the option. (In lowercase)
      * @param description The description of the option.
@@ -44,6 +62,8 @@ public abstract class CommandExecutor
     }
 
     /**
+     * Add an argument to your command.
+     *
      * @param type The type of the option.
      * @param name The name of the option. (In lowercase)
      * @param description The description of the option.
@@ -55,6 +75,8 @@ public abstract class CommandExecutor
     }
 
     /**
+     * Add an argument to your command.
+     *
      * @param type The type of the option.
      * @param name The name of the option. (In lowercase)
      * @param description The description of the option.
@@ -67,6 +89,8 @@ public abstract class CommandExecutor
     }
 
     /**
+     * This is the method that will be executed when the command will be executed on discord.
+     *
      * @param event The slash command event containing the author and all the necessary discord information about the event.
      * @throws CommandExecutorError If there is an error in the code of the command.
      * @throws UserError If there is an error coming from the user input.
@@ -74,7 +98,9 @@ public abstract class CommandExecutor
     public abstract void execute(SlashCommandInteractionEvent event) throws CommandExecutorError, UserError;
 
     /**
-     * @return Get the name of the command.
+     * Get the name of the command.
+     *
+     * @return the name of the command.
      */
     public String getName()
     {
@@ -82,7 +108,9 @@ public abstract class CommandExecutor
     }
 
     /**
-     * @return Get the description of the command.
+     * Get the description of the command.
+     *
+     * @return the description of the command.
      */
     public String getDescription()
     {
@@ -90,7 +118,9 @@ public abstract class CommandExecutor
     }
 
     /**
-     * @return Get the options of the command.
+     * Get the options of the command.
+     *
+     * @return the options of the command.
      */
     public List<OptionData> getOptions()
     {
@@ -98,7 +128,9 @@ public abstract class CommandExecutor
     }
 
     /**
-     * @return Get the slash command data.
+     * Get the slash command data.
+     *
+     * @return the slash command data.
      */
     public SlashCommandData getSlashCommandData()
     {
@@ -106,8 +138,11 @@ public abstract class CommandExecutor
     }
 
     /**
+     * Determine if the command is only executable by a member that have
+     * the Administrator permission on the server.
+     *
      * @return {@code true} if the command is only executable by an admin,
-     * {@code false} otherwise.
+     *          {@code false} otherwise.
      */
     public boolean isAdminOnly()
     {
@@ -115,7 +150,10 @@ public abstract class CommandExecutor
     }
 
     /**
-     * @param data Set the slash command data. (Only use it in the lx-lib !!)
+     * Set the slash command data.
+     * <strong>You are not supposed to use this method.</strong>
+     *
+     * @param data The slash command data. (Only use it in the lx-lib !!)
      */
     public void setSlashCommandData(SlashCommandData data)
     {
