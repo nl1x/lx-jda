@@ -10,6 +10,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * The {@code CommandManager} class.
+ * <strong>You are not supposed to create a new instance of this class.</strong>
+ * <strong>To use this class, get the instance from your {@code LxJDA} instance.</strong>
+ */
 public class CommandManager implements Loggable
 {
 
@@ -19,9 +24,10 @@ public class CommandManager implements Loggable
     private final List<SlashCommandData> commandsData;
 
     /**
+     *
      * Create a new instance of the command manager to manager the commands.
-     * Only one command manager is required. Multiple command manager can cause
-     * problems on the discord server available commands.
+     * Only one command manager is required.
+     * Multiple command manager can cause problems on the discord server available commands.
      */
     public CommandManager()
     {
@@ -31,6 +37,8 @@ public class CommandManager implements Loggable
     }
 
     /**
+     * Register a new command.
+     *
      * @param executor The {@code CommandExecutor} command executor.
      */
     public void registerCommand(CommandExecutor executor)
@@ -60,6 +68,8 @@ public class CommandManager implements Loggable
     }
 
     /**
+     * Get all the registered commands.
+     *
      * @return Get all the registered commands.
      */
     public HashMap<String, CommandExecutor> getRegisteredCommands()
@@ -68,7 +78,10 @@ public class CommandManager implements Loggable
     }
 
     /**
-     * @return Get a specific registered command executor.
+     * Get a specific registered command executor.
+     *
+     * @param name The command name.
+     * @return a specific registered command executor.
      */
     public CommandExecutor getRegisteredCommand(String name)
     {
@@ -76,7 +89,9 @@ public class CommandManager implements Loggable
     }
 
     /**
-     * @return Get the instance of the command manager.
+     * Get the instance of the command manager.
+     *
+     * @return the instance of the command manager.
      */
     public static CommandManager getInstance()
     {

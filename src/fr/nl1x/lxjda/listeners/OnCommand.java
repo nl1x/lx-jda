@@ -21,12 +21,18 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * The listener that catch every command.
+ * You are not supposed to create an instance of this class.
+ */
 public class OnCommand extends ListenerAdapter implements Loggable
 {
 
     private final LxJDA bot;
 
     /**
+     * Create a new instance of the listener OnCommand to handle every slash commands.
+     *
      * @param bot The bot.
      */
     public OnCommand(LxJDA bot)
