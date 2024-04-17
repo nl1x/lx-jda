@@ -1,35 +1,31 @@
 embed:
-  default-color: <HEX_DEFAULT_COLOR>
+  _default:
+    color: 0x277baf
 
   footer:
-    icon: <FOOTER_ICON_LINK>
-    string: <FOOTER_STRING>
+    string: "LxJDA - Made by L1x"
+    icon: "https://footer-icon.png"
 
   success:
-    title: Action réalisée avec succès !
-    color: <HEX_SUCCESS_COLOR>
-    icon: <SUCCESS_ICON_LINK>
+    string: "Action réalisée avec succès !"
+    color: 0x277baf
+    icon: "https://success-icon.png"
 
   error:
-    title: Une erreur s'est produite...
-    color: <HEX_ERROR_COLOR>
-    icon: <ERROR_ICON_LINK>
+    string: "Une erreur s'est produite..."
+    color: 0x277baf
+    icon: "https://error-icon.png"
 
+id:
+  0:
+    channel:
+      log: 0
 
-token:
-  var: TOKEN
+error:
+  command:
+    notFound: "La commande est introuvable."
+    internal: "Une erreur interne s'est produite."
+    adminOnly: "Permissions insuffisantes."
 
-
-channel:
-  log-report: <CHANNEL_ID>
-
-
-commands:
-  error:
-    not-found: Commande introuvable.
-    internal: Une erreur interne s'est produite.
-    admin-only: Vous n'avez pas les permissions d'exécuter cette commande.
-
-config:
-  error:
-    reload-failed: Une erreur s'est produite lors du rechargement du fichier de configuration.
+  config:
+    reloadFailed: "Le rechargement du fichier de configuration a échoué."
