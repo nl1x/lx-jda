@@ -2,10 +2,7 @@ package fr.nl1x.lxjda.manager;
 
 import fr.nl1x.lxjda.exceptions.config.ConfigAlreadyExists;
 import fr.nl1x.lxjda.exceptions.config.ConfigNotFound;
-import fr.nl1x.lxjda.logger.Logger;
-import fr.nl1x.lxjda.manager.config.BotConfig;
 import fr.hashtek.hashconfig.HashConfig;
-import fr.nl1x.lxjda.manager.config.ConfigFile;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -19,8 +16,8 @@ import java.util.Set;
 public class ConfigManager
 {
 
-    private final BotConfig botConfig;
-    private final Map<String, ConfigFile> configFiles;
+    private final HashConfig botConfig;
+    private final Map<String, HashConfig> configFiles;
 
     /**
      * Create a new instance of the ConfigManager class.
@@ -31,10 +28,8 @@ public class ConfigManager
      */
     public ConfigManager() throws IOException
     {
-        botConfig = new BotConfig(
-            new HashConfig(this.getClass(), "config/bot.yml", "config/bot.yml", true)
-        );
-        configFiles = new HashMap<String, ConfigFile>();
+        botConfig = new HashConfig(this.getClass(), "config/bot.yml", "config/bot.yml", true);
+        configFiles = new HashMap<String, HashConfig>();
         configFiles.put("config/bot.yml", botConfig);
     }
 
@@ -43,7 +38,7 @@ public class ConfigManager
      *
      * @return The bot default configuration.
      */
-    public BotConfig getBotConfig()
+    public HashConfig getBotConfig()
     {
         return botConfig;
     }
@@ -55,7 +50,7 @@ public class ConfigManager
      *                   with {@code ConfigManager#setConfig}.
      * @return The configuration found, or {@code null} if not found.
      */
-    public ConfigFile getConfig(String configName)
+    public HashConfig getConfig(String configName)
     {
         return configFiles.get(configName);
     }
@@ -80,7 +75,7 @@ public class ConfigManager
      *                  a configuration with this name already exists.
      * @throws ConfigAlreadyExists if a configuration already exists with this name.
      */
-    public void setConfig(String configName, ConfigFile config, boolean overwrite) throws ConfigAlreadyExists
+    public void setConfig(String configName, HashConfig config, boolean overwrite) throws ConfigAlreadyExists
     {
         if (configFiles.containsKey(configName) && !overwrite)
             throw new ConfigAlreadyExists("This configuration file already exists.");

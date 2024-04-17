@@ -6,10 +6,10 @@ import fr.nl1x.lxjda.exceptions.command.UserError;
 import fr.nl1x.lxjda.logger.Loggable;
 import fr.nl1x.lxjda.manager.CommandManager;
 import fr.nl1x.lxjda.manager.EmbedManager;
-import fr.nl1x.lxjda.manager.config.BotConfig;
 import fr.nl1x.lxjda.manager.executor.CommandExecutor;
 import fr.nl1x.lxjda.logger.Logger;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -17,6 +17,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.jetbrains.annotations.NotNull;
+import org.simpleyaml.configuration.file.YamlFile;
 
 import java.util.HashMap;
 import java.util.List;
@@ -48,25 +49,29 @@ public class OnCommand extends ListenerAdapter implements Loggable
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event)
     {
-        BotConfig botConfig = this.bot.getConfigManager().getBotConfig();
-        HashMap<String, CommandExecutor> registeredCommands = CommandManager.getInstance().getRegisteredCommands();
-        CommandExecutor executor = null;
-        String commandName = event.getName();
+        final YamlFile yaml = this.bot.getConfigManager().getBotConfig().getYaml();
+        final HashMap<String, CommandExecutor> registeredCommands = CommandManager.getInstance().getRegisteredCommands();
+        final CommandExecutor executor;
+        final String commandName = event.getName();
+        String errorMessage = null;
         Member member = event.getMember();
 
         if (!registeredCommands.containsKey(commandName)) {
-            this.onError(event, botConfig.getCommandErrorNotFound());
+            errorMessage = yaml.getString("error.command.notFound");
+            this.onError(event, errorMessage);
             return;
         }
 
         try {
             executor = registeredCommands.get(commandName);
-            if (executor.isAdminOnly()
-                    && member != null && !member.hasPermission(Permission.ADMINISTRATOR))
-                this.onError(event, botConfig.getCommandErrorAdminOnly());
+            if (executor.isAdminOnly() && member != null && !member.hasPermission(Permission.ADMINISTRATOR)) {
+                errorMessage = yaml.getString("error.command.adminOnly");
+                this.onError(event, errorMessage);
+            }
             executor.execute(event);
         } catch (CommandExecutorError error) {
-            this.onError(event, botConfig.getCommandErrorInternal());
+            errorMessage = yaml.getString("error.config.reloadFailed");
+            this.onError(event, errorMessage);
             this.logError(event, error.getLocalizedMessage());
         } catch (UserError error) {
             this.onError(event, error.getMessage());
@@ -92,14 +97,22 @@ public class OnCommand extends ListenerAdapter implements Loggable
      */
     private void logError(SlashCommandInteractionEvent event, String error)
     {
-        BotConfig botConfig = this.bot.getConfigManager().getBotConfig();
-        long logReportChannelId = botConfig.getChannelLogReport();
-        TextChannel logReportChannel = null;
+        final YamlFile yaml = this.bot.getConfigManager().getBotConfig().getYaml();
+        final TextChannel logReportChannel;
+        final int logReportChannelId;
+        final String guildId;
+        final Guild guild;
+
         CommandExecutor executor = this.bot.getCommandManager().getRegisteredCommand(event.getName());
         String errorMessage = this.buildLogErrorMessage(executor.getName(), event.getOptions(), error, event.getMember());
         MessageEmbed embed = this.bot.getEmbedManager().getErrorBuilder("Command error", errorMessage).build();
 
         try {
+            guild = event.getGuild();
+            if (guild == null)
+                throw new NullPointerException("Cannot log error: Guild not found.");
+            guildId = guild.getId();
+            logReportChannelId = yaml.getInt("id.%guild%.channel.log".replace("%guild%", guildId));
             logReportChannel = LxJDA.getJDA().getTextChannelById(logReportChannelId);
             if (logReportChannel == null)
                 throw new NullPointerException("Log report channel not found. (id = " + logReportChannelId + ")");

@@ -1,8 +1,9 @@
 package fr.nl1x.lxjda.manager;
 
-import fr.nl1x.lxjda.manager.config.BotConfig;
+import fr.hashtek.hashconfig.HashConfig;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import org.simpleyaml.configuration.file.YamlFile;
 
 /**
  * The EmbedManager class. It allows you to use some pre-made embeds builders.
@@ -11,7 +12,7 @@ public class EmbedManager
 {
 
     private static EmbedManager instance;
-    private final BotConfig botConfig;
+    private final HashConfig botConfig;
 
     /**
      * Create a new instance of the EmbedManager class.
@@ -20,7 +21,7 @@ public class EmbedManager
      *
      * @param botConfig The bot default configuration.
      */
-    public EmbedManager(BotConfig botConfig)
+    public EmbedManager(HashConfig botConfig)
     {
         EmbedManager.instance = this;
         this.botConfig = botConfig;
@@ -33,10 +34,14 @@ public class EmbedManager
      */
     public EmbedBuilder getDefaultBuilder()
     {
+        YamlFile yaml = this.botConfig.getYaml();
         EmbedBuilder builder = new EmbedBuilder();
-        String footerString = this.botConfig.getEmbedFooterString();
-        String footerIcon = this.botConfig.getEmbedFooterIcon();
-        int defaultColor = this.botConfig.getEmbedDefaultColor();
+        String footerString = yaml.getString("embed.footer.string");
+        String footerIcon = yaml.getString("embed.footer.icon");
+        int defaultColor = yaml.getInt("embed._default.color");
+
+        if (!footerString.startsWith("https://"))
+            footerString = null;
 
         builder.setFooter(footerString, footerIcon);
         builder.setColor(defaultColor);
@@ -51,9 +56,13 @@ public class EmbedManager
      */
     public MessageEmbed getSuccessEmbed(String title)
     {
+        YamlFile yaml = this.botConfig.getYaml();
         EmbedBuilder builder = new EmbedBuilder();
-        int color = this.botConfig.getEmbedSuccessColor();
-        String icon = this.botConfig.getEmbedSuccessIcon();
+        int color = yaml.getInt("embed.success.color");
+        String icon = yaml.getString("embed.success.icon");
+
+        if (!icon.startsWith("https://"))
+            icon = null;
 
         builder.setAuthor(title, null, icon);
         builder.setColor(color);
@@ -69,9 +78,13 @@ public class EmbedManager
      */
     public EmbedBuilder getErrorBuilder(String title, String error)
     {
+        YamlFile yaml = this.botConfig.getYaml();
         EmbedBuilder builder = this.getDefaultBuilder();
-        String errorIcon = this.botConfig.getEmbedErrorIcon();
-        int errorColor = this.botConfig.getEmbedErrorColor();
+        String errorIcon = yaml.getString("embed.error.icon");
+        int errorColor = yaml.getInt("embed.error.color");
+
+        if (!errorIcon.startsWith("https://"))
+            errorIcon = null;
 
         builder.setColor(errorColor);
         builder.setAuthor(title, null, errorIcon);
@@ -87,7 +100,9 @@ public class EmbedManager
      */
     public EmbedBuilder getErrorBuilder(String error)
     {
-        return this.getErrorBuilder(this.botConfig.getEmbedErrorTitle(), error);
+        YamlFile yaml = this.botConfig.getYaml();
+
+        return this.getErrorBuilder(yaml.getString("embed.error.title"), error);
     }
 
     /**
