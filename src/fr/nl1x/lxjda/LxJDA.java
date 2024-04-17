@@ -7,6 +7,7 @@ import fr.nl1x.lxjda.manager.EmbedManager;
 import fr.nl1x.lxjda.manager.EventManager;
 import fr.nl1x.lxjda.manager.CommandManager;
 import fr.nl1x.lxjda.logger.Logger;
+import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -36,6 +37,7 @@ public abstract class LxJDA implements Loggable
      */
     public LxJDA(GatewayIntent intent, GatewayIntent... intents) throws IOException
     {
+        final Dotenv env;
         LxJDA.instance = this;
 
         commandManager = new CommandManager();
@@ -43,7 +45,8 @@ public abstract class LxJDA implements Loggable
         eventManager = new EventManager();
         embedManager = new EmbedManager(configManager.getBotConfig());
 
-        this.builder = JDABuilder.createDefault(configManager.getBotConfig().getToken());
+        env = this.configManager.getBotConfig().getEnv();
+        this.builder = JDABuilder.createDefault(env.get("TOKEN"));
         this.builder.enableIntents(intent, intents);
     }
 
